@@ -14,7 +14,7 @@ public class Veterinarian {
 	public void toCheck(Dog dog) {
 		logger.info("The veterinarian " + id + " just started to check the dog " + dog.id);
 
-		if (dog.isHealthy) {
+		if (dog.getIsHealthy()) {
 			logger.info("The dog number " + dog.id + " is healthy");
 		} else {
 			logger.info("The dog number " + dog.id + " is not healthy");
@@ -22,12 +22,12 @@ public class Veterinarian {
 		}
 		logger.info("The veterinarian number " + id + " is done with the dog number " + dog.id + "\nThe dog number "
 				+ dog.id + " is ready for its daily routine");
-		dog.isReady = true;
+		dog.setIsReady(true);
 	}
 
 	public void toTreat(Dog dog) {
 		logger.info("The veterinarian number " + id + " is treating the dog number " + dog.id);
-		dog.isHealthy = true; // the dog is cured!
+		dog.setIsHealthy(true); // the dog is cured!
 		logger.info("The dog number " + dog.id + " is fine now");
 	}
 

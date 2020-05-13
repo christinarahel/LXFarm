@@ -12,18 +12,19 @@ public class AdultDog extends Dog {
 
 	@Override
 	public boolean grownUp() {
-		if (DogFarm.AGE_OF_RETIREMENT < this.age) { // then the adult became elderly
+		if (DogFarm.AGE_OF_RETIREMENT < this.getAge()) { // then the adult became elderly
 			logger.info("The adult dog with ID " + id + " became elderly");
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override
 	public void eats() {
-		if (this.isHungry) {
+		if (this.getIsHungry()) {
 			logger.info("The adult dog with ID " + id + " is eating a big meal for adults");
-			isHungry = false;
+			this.setIsHungry(false);
 		}
 	}
 
@@ -32,10 +33,10 @@ public class AdultDog extends Dog {
 		logger.info("The adult dog with ID " + id + " goes to work");
 	}
 
-	public static class Builder extends Dog.Builder {
+	public static class Builder extends Dog.Builder<AdultDog> {
 
 		@Override
-		public AdultDog build() { // WHY IS HE NOT HAPPY???!!!!
+		public AdultDog build() {
 			return new AdultDog(this);
 		}
 	}

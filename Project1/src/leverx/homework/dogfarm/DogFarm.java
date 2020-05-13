@@ -7,19 +7,24 @@ import java.util.logging.Logger;
 public class DogFarm {
 
 	private static final Logger logger = Logger.getLogger("leverx.homework.dogfarm.DogFarm");
-	List<Dog> dogsList;
+
+	public static final float AGE_OF_ADULTHOOD = 2.0f;
+	public static final float AGE_OF_RETIREMENT = 8.0f;
+	public static final float LIFE_TERM = 15.0f;
+
+	private List<Dog> dogsList;
 	private int dogsNumber;
 
-	List<Aviary> aviariesList;
+	private List<Aviary> aviariesList;
 	private int aviariesNumber;
 
-	List<Veterinarian> vetList;
+	private List<Veterinarian> vetList;
 	private int vetNumber;
 
-	List<ServingStaff> staffList;
+	private List<ServingStaff> staffList;
 	private int staffNumber;
 
-	public DogFarm(Builder builder) {
+	private DogFarm(Builder builder) {
 		this.dogsNumber = builder.dogsNumber;
 		this.dogsList = new ArrayList<Dog>(dogsNumber);
 
@@ -32,10 +37,6 @@ public class DogFarm {
 		this.staffNumber = builder.staffNumber;
 		this.staffList = new ArrayList<ServingStaff>(dogsNumber);
 	}
-
-	public static final float AGE_OF_ADULTHOOD = 2.0f;
-	public static final float AGE_OF_RETIREMENT = 8.0f;
-	public static final float LIFE_TERM = 15.0f;
 
 	public static class Builder {
 		private int dogsNumber;
@@ -67,17 +68,21 @@ public class DogFarm {
 			return new DogFarm(this);
 		};
 	}
-/**
- * DogFarm consists of: a list of the Dogs (dog can be a puppy, an adult, an elderly); list of ServingStaff, list of Veterinarians.
- * A Dog needs to be fed twice daily, checked by a Veterinarian and served by the ServingStaff. 
- * 
- * Every morning the dogs become older and get sick randomly.
- * Veterinarian checks each Dog, if the dog is not healthy - treats, and declares a dog ready for work (other duties).
- * Serving staff works only with Dogs inspected by the Veterinarian. Serving staff trains puppies, sends the dogs to work or to rest in order to empty the aviary and to clean the aviary only when it's empty. 
- * When all the aviaries cleaned, dogs can come back to their aviaries and can eat for the second time. 
- * Then the day is over.
- * */
-	
+
+	/**
+	 * DogFarm consists of: a list of the Dogs (dog can be a puppy, an adult, an
+	 * elderly); list of ServingStaff, list of Veterinarians. A Dog needs to be fed
+	 * twice daily, checked by a Veterinarian and served by the ServingStaff.
+	 * 
+	 * Every morning the dogs become older and get sick randomly. Veterinarian
+	 * checks each Dog, if the dog is not healthy - treats, and declares a dog ready
+	 * for work (other duties). Serving staff works only with Dogs inspected by the
+	 * Veterinarian. Serving staff trains puppies, sends the dogs to work or to rest
+	 * in order to empty the aviary and to clean the aviary only when it's empty.
+	 * When all the aviaries cleaned, dogs can come back to their aviaries and can
+	 * eat for the second time. Then the day is over.
+	 */
+
 	public static void main(String[] args) {
 
 		DogFarm dogFarm = new DogFarm.Builder().dogsNumber(5).aviariesNumber(3).staffNumber(3).vetNumber(2).build();
@@ -106,23 +111,24 @@ public class DogFarm {
 			float age = (float) Math.random() * LIFE_TERM; // the gods' age is defined randomly
 
 			if (age < AGE_OF_ADULTHOOD) { // if a dog is still young, we consider it a puppy
-				PuppyDog.Builder b = new PuppyDog.Builder(); // WHY DO I HAVE A MISTAKE IF SET NEEDSTRAINING AT THE LINE
-																// BELOW???????
-				b.needsTraining(true);
-				PuppyDog pd = b.id(i + 1).age(age).isHealthy(true).isHungry(false).build();
+				PuppyDog.Builder b = new PuppyDog.Builder();
+				b.needsTraining(true).id(i + 1).age(age).isHealthy(true).isHungry(false);
+				PuppyDog pd = (PuppyDog) b.build();
 				dogsList.add(pd);
 				aviariesList.get(i % aviariesNumber).addDog(pd); // accommodate the dog to an aviary
 				pd.setAviary(aviariesList.get(i % aviariesNumber)); // informing a dog about its aviary
 
 			} else if (age < AGE_OF_RETIREMENT) {// if a dog is above the retirement age, we consider it an adult
-				AdultDog ad = new AdultDog.Builder().id(i + 1).age(age).isHealthy(true).isHungry(false).build();
+				AdultDog ad = (AdultDog) new AdultDog.Builder().id(i + 1).age(age).isHealthy(true).isHungry(false)
+						.build();
 				dogsList.add(ad);
 				aviariesList.get(i % aviariesNumber).addDog(ad); // accommodate the dog to an aviary
 				ad.setAviary(aviariesList.get(i % aviariesNumber)); // informing a dog about its aviary
 			}
 
 			else { // if a dog has reached retirement age we consider it an elderly
-				ElderlyDog ed = new ElderlyDog.Builder().id(i + 1).age(age).isHealthy(true).isHungry(false).build();
+				ElderlyDog ed = (ElderlyDog) new ElderlyDog.Builder().id(i + 1).age(age).isHealthy(true).isHungry(false)
+						.build();
 				dogsList.add(ed);
 				aviariesList.get(i % aviariesNumber).addDog(ed); // accommodate the dog to an aviary
 				ed.setAviary(aviariesList.get(i % aviariesNumber)); // informing a dog about its aviary
@@ -154,16 +160,16 @@ public class DogFarm {
 			if (dogsList.get(i).grownUp()) { // checking if someone grown from its age category
 				Dog dog = dogsList.get(i);
 				if (dog.getAge() > AGE_OF_RETIREMENT) {
-					dog.getAviary().petsList.remove(dog); 
-					ElderlyDog ad = new ElderlyDog.Builder().id(dog.id).age(dog.getAge()).isHealthy(dog.getIsHealthy())
-							.isHungry(true).build();
+					dog.getAviary().petsList.remove(dog);
+					ElderlyDog ad = (ElderlyDog) new ElderlyDog.Builder().id(dog.id).age(dog.getAge())
+							.isHealthy(dog.getIsHealthy()).isHungry(true).build();
 					dogsList.set(i, ad);
 					dog.getAviary().petsList.add(ad);
 
 				} else {
-					dog.getAviary().petsList.remove(dog); 
-					AdultDog ad = new AdultDog.Builder().id(dog.id).age(dog.getAge()).isHealthy(dog.getIsHealthy())
-							.isHungry(true).build();
+					dog.getAviary().petsList.remove(dog);
+					AdultDog ad = (AdultDog) new AdultDog.Builder().id(dog.id).age(dog.getAge())
+							.isHealthy(dog.getIsHealthy()).isHungry(true).build();
 					dogsList.set(i, ad);
 					dog.getAviary().petsList.add(ad);
 				}
@@ -205,7 +211,7 @@ public class DogFarm {
 	public void sendAllHome() {
 		logger.info("all the dogs are coming back and are getting hungry");
 		for (int i = 0; i < dogsList.size(); i++) {
-			dogsList.get(i).isHungry = true; // dog has got hungry
+			dogsList.get(i).setIsHungry(true); // dog has got hungry
 			dogsList.get(i).getAviary().dogsNowIn++;
 		}
 	}
